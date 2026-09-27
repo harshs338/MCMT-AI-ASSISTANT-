@@ -1,0 +1,200 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fb;
+}
+
+header {
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+main {
+    padding: 30px;
+}
+
+.login-box {
+    width: 350px;
+    margin: 50px auto;
+    padding: 25px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.login-box h2 {
+    margin-top: 0;
+}
+
+.login-box label {
+    display: block;
+    margin-top: 15px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.chat-page {
+    max-width: 800px;
+    margin: auto;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-header h2 {
+    margin: 0;
+}
+
+.chat-header p {
+    margin-bottom: 0;
+}
+
+.chat-area {
+    min-height: 400px;
+    padding: 20px;
+}
+
+.ai-message,
+.user-message {
+    max-width: 70%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.ai-message {
+    background-color: #f0f2f5;
+}
+
+.user-message {
+    margin-left: auto;
+    background-color: #e4e8ff;
+}
+
+.message-form {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    gap: 10px;
+}
+
+.message-form input {
+    flex: 1;
+    padding: 12px;
+}
+
+.message-form button {
+    padding: 12px 20px;
+    cursor: pointer;
+}
+
+.student-chat {
+    display: flex;
+    height: 600px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 220px;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+.new-chat-button {
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.chat-list p {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.sidebar a {
+    display: block;
+    margin-top: 20px;
+}
+
+.student-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.student-chat-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.student-chat-header h2 {
+    margin: 0;
+}
+
+.student-chat-header span {
+    font-size: 14px;
+}
+
+.student-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+.profile-box,
+.notices-box {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.profile-box button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.notice {
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.notice h3 {
+    margin-top: 0;
+}
+
+.notice small {
+    color: #666;
+}

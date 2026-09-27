@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login - MCMT AI Assistant
+{% endblock %}
+
+{% block content %}
+
+<div class="login-box">
+
+    <h2>Student Login</h2>
+
+    <p>Login to use the student features.</p>
+
+    <form>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="#">Register</a>
+    </p>
+
+</div>
+
+{% endblock %}

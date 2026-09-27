@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+Guest Chat - MCMT AI Assistant
+{% endblock %}
+
+{% block content %}
+
+<div class="chat-page">
+
+    <div class="chat-header">
+        <h2>MCMT AI Assistant</h2>
+        <p>Guest Mode</p>
+    </div>
+
+    <div class="chat-area">
+
+        <div class="ai-message">
+            Hello! I am MCMT AI Assistant.
+            You can ask me about admission, courses, fees and other
+            general college information.
+        </div>
+
+        <div class="user-message">
+            What is the admission process?
+        </div>
+
+        <div class="ai-message">
+            You can ask your admission-related question here.
+        </div>
+
+    </div>
+
+    <form class="message-form">
+
+        <input
+            type="text"
+            placeholder="Type your message..."
+        >
+
+        <button type="submit">Send</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

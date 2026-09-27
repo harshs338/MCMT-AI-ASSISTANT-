@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Chat - MCMT AI Assistant
+{% endblock %}
+
+{% block content %}
+
+<div class="student-chat">
+
+    <aside class="sidebar">
+
+        <button class="new-chat-button">
+            + New Chat
+        </button>
+
+        <h3>Previous Chats</h3>
+
+        <div class="chat-list">
+            <p>BCA admission process...</p>
+            <p>Semester 3 syllabus...</p>
+            <p>Exam notice...</p>
+        </div>
+
+        <a href="#">Profile</a>
+
+    </aside>
+
+
+    <section class="student-chat-area">
+
+        <div class="student-chat-header">
+            <h2>MCMT AI Assistant</h2>
+            <span>Student Mode</span>
+        </div>
+
+        <div class="student-messages">
+
+            <div class="ai-message">
+                Hello! How can I help you today?
+            </div>
+
+            <div class="user-message">
+                What is the syllabus for semester 3?
+            </div>
+
+            <div class="ai-message">
+                I can help you find the semester 3 syllabus.
+            </div>
+
+        </div>
+
+        <form class="message-form">
+
+            <input
+                type="text"
+                placeholder="Ask something..."
+            >
+
+            <button type="submit">Send</button>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}
