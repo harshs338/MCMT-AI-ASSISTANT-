@@ -9,6 +9,8 @@ def create_app():
         static_folder="../static"
     )
 
+    app.secret_key = "mcmt-secret-key"
+
     app.register_blueprint(main)
 
     return app
