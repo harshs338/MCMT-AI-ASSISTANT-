@@ -10,17 +10,22 @@ Student Chat - MCMT AI Assistant
 
     <aside class="sidebar">
 
-        <button class="new-chat-button">
-            + New Chat
-        </button>
-
+     <a href="{{ url_for('main.new_chat') }}" class="new-chat-button">
+    + New Chat
+</a>   
         <h3>Previous Chats</h3>
 
-        <div class="chat-list">
-            <p>BCA admission process...</p>
-            <p>Semester 3 syllabus...</p>
-            <p>Exam notice...</p>
-        </div>
+      <div class="chat-list">
+
+    {% for chat in chats %}
+        <a href="{{ url_for('main.student_chat', chat_id=chat['chat_id']) }}">
+            {{ chat["title"] }}
+        </a>
+    {% else %}
+        <p>No previous chats yet.</p>
+    {% endfor %}
+
+</div>  
 
         <a href="#">Profile</a>
 
@@ -29,37 +34,84 @@ Student Chat - MCMT AI Assistant
 
     <section class="student-chat-area">
 
-        <div class="student-chat-header">
-            <h2>MCMT AI Assistant</h2>
-            <span>Student Mode</span>
-        </div>
+     <div class="student-chat-header">
+    {% if selected_chat %}
+        <h2>{{ selected_chat["title"] }}</h2>
+    {% else %}
+        <h2>New Chat</h2>
+    {% endif %}
 
-        <div class="student-messages">
+    <span>Student Mode</span>
+</div>   
+
+     <div class="student-messages">
+
+    {% if selected_chat %}
+
+        {% for message in messages %}
+
+            {% if message["sender"] == "user" %}
+
+                <div class="user-message">
+                    <span class="message-content">
+                        {{ message["content"] }}
+                    </span>
+
+                    <small class="message-time">
+                        {{ message["created_at"] }}
+                    </small>
+                </div>
+
+            {% else %}
+
+                <div class="ai-message">
+                    <span class="message-content">
+                        {{ message["content"] }}
+                    </span>
+
+                    <small class="message-time">
+                        {{ message["created_at"] }}
+                    </small>
+                </div>
+
+            {% endif %}
+
+        {% else %}
 
             <div class="ai-message">
                 Hello! How can I help you today?
             </div>
 
-            <div class="user-message">
-                What is the syllabus for semester 3?
-            </div>
+        {% endfor %}
 
-            <div class="ai-message">
-                I can help you find the semester 3 syllabus.
-            </div>
+    {% else %}
 
+        <div class="ai-message">
+            Select a chat or create a new chat to start.
         </div>
 
-        <form class="message-form">
+    {% endif %}
 
-            <input
-                type="text"
-                placeholder="Ask something..."
-            >
+</div>  
 
-            <button type="submit">Send</button>
+     <form class="message-form" method="POST" action="{{ url_for('main.send_message') }}">
 
-        </form>
+    <input
+        type="hidden"
+        name="chat_id"
+        value="{{ selected_chat['chat_id'] if selected_chat else '' }}"
+    >
+
+    <input
+        type="text"
+        name="content"
+        placeholder="Ask something..."
+        required
+    >
+
+    <button type="submit">Send</button>
+
+</form>   
 
     </section>
 

@@ -1,10 +1,17 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
+from datetime import datetime, timedelta
 from sqlite3 import IntegrityError
 from werkzeug.security import generate_password_hash
 from database.database import get_db_connection
 
 
 main = Blueprint("main", __name__)
+
+def format_time(timestamp):
+    time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+    time = time + timedelta(hours=5, minutes=30)
+
+    return time.strftime("%I:%M %p").lstrip("0")
 
 
 @main.route("/")
@@ -118,7 +125,129 @@ def student_chat():
     if "user_id" not in session:
         return redirect(url_for("main.login"))
 
-    return render_template("student_chat.html")
+    chat_id = request.args.get("chat_id")
+
+    connection = get_db_connection()
+
+    chats = connection.execute(
+        """
+        SELECT chat_id, title
+        FROM chats
+        WHERE user_id = ?
+        ORDER BY created_at DESC
+        """,
+        (session["user_id"],)
+    ).fetchall()
+
+    selected_chat = None
+    messages = []
+
+    if chat_id:
+        selected_chat = connection.execute(
+            """
+            SELECT chat_id, title
+            FROM chats
+            WHERE chat_id = ? AND user_id = ?
+            """,
+            (chat_id, session["user_id"])
+        ).fetchone()
+
+        if selected_chat:
+            messages = connection.execute(
+                """
+                SELECT sender, content, created_at
+                FROM messages
+                WHERE chat_id = ?
+                ORDER BY created_at ASC, message_id ASC
+                """,
+                (selected_chat["chat_id"],)
+            ).fetchall()
+
+        messages = [
+        {
+            "sender": message["sender"],
+            "content": message["content"],
+            "created_at": format_time(message["created_at"])
+        }
+        for message in messages
+    ]    
+
+    connection.close()
+
+    return render_template(
+        "student_chat.html",
+        chats=chats,
+        selected_chat=selected_chat,
+        messages=messages
+    )
+
+@main.route("/send-message", methods=["POST"])
+def send_message():
+
+    if "user_id" not in session:
+        return redirect(url_for("main.login"))
+
+    chat_id = request.form["chat_id"]
+    content = request.form["content"]
+
+    if not content.strip():
+        return redirect(
+            url_for("main.student_chat", chat_id=chat_id)
+        )
+
+    connection = get_db_connection()
+
+    chat = connection.execute(
+        """
+        SELECT chat_id
+        FROM chats
+        WHERE chat_id = ? AND user_id = ?
+        """,
+        (chat_id, session["user_id"])
+    ).fetchone()
+
+    if chat is None:
+        connection.close()
+        return redirect(url_for("main.student_chat"))
+
+    connection.execute(
+        """
+        INSERT INTO messages (chat_id, sender, content)
+        VALUES (?, ?, ?)
+        """,
+        (chat_id, "user", content.strip())
+    )
+
+    connection.commit()
+    connection.close()
+
+    return redirect(
+        url_for("main.student_chat", chat_id=chat_id)
+    )
+
+@main.route("/new-chat")
+def new_chat():
+
+    if "user_id" not in session:
+        return redirect(url_for("main.login"))
+
+    connection = get_db_connection()
+
+    cursor = connection.execute(
+        """
+        INSERT INTO chats (user_id, title)
+        VALUES (?, ?)
+        """,
+        (session["user_id"], "New Chat")
+    )
+
+    connection.commit()
+
+    chat_id = cursor.lastrowid
+
+    connection.close()
+
+    return redirect(url_for("main.student_chat", chat_id=chat_id))
 
 @main.route("/logout")
 def logout():
