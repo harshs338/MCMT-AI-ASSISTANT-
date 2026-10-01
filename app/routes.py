@@ -243,6 +243,16 @@ def send_message():
             (title, chat_id, session["user_id"])
         )
 
+    ai_response = "I received your question. AI response will be connected here."
+
+    connection.execute(
+        """
+        INSERT INTO messages (chat_id, sender, content)
+        VALUES (?, ?, ?)
+        """,
+        (chat_id, "ai", ai_response)
+    )
+
     connection.commit()
     connection.close()
 
