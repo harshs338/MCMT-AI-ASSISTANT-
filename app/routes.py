@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify
 from google import genai
 from datetime import datetime, timedelta
 from sqlite3 import IntegrityError
@@ -17,10 +17,33 @@ def format_time(timestamp):
     return time.strftime("%I:%M %p").lstrip("0")
 
 def get_ai_response(message):
+    instructions = """
+You are MCMT AI Assistant, a helpful college assistant.
+
+Your most important rule is to match the language of the student's question.
+
+LANGUAGE RULES:
+1. If the question is written in English, answer completely in English.
+2. If the question is written in Roman Hinglish, answer completely in Roman Hinglish.
+3. If the question contains both English and Roman Hinglish, use the same mixed style.
+4. Do not convert an English question into Hindi or Roman Hinglish.
+5. Do not convert a Roman Hinglish question into English.
+6. For short questions like "What is BCA?", "What is MCA?", or "What is admission?",
+   identify the language from the wording of the question and answer in that language.
+
+Keep answers simple, clear, and student-friendly.
+
+Do not make up college-specific information.
+If you do not have enough information to answer a college-specific question,
+say that the information is not currently available.
+
+Student question:
+"""
+
     try:
         response = client.models.generate_content(
             model="gemini-3.5-flash-lite",
-            contents=message
+            contents=instructions + message
         )
 
         return response.text
@@ -271,9 +294,11 @@ def send_message():
     connection.commit()
     connection.close()
 
-    return redirect(
-        url_for("main.student_chat", chat_id=chat_id)
-    )
+    return jsonify({
+    "success": True,
+    "user_message": content.strip(),
+    "ai_response": ai_response
+    })
 
 @main.route("/new-chat")
 def new_chat():
