@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
+from google import genai
 from datetime import datetime, timedelta
 from sqlite3 import IntegrityError
 from werkzeug.security import generate_password_hash
@@ -7,11 +8,25 @@ from database.database import get_db_connection
 
 main = Blueprint("main", __name__)
 
+client = genai.Client()
+
 def format_time(timestamp):
     time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
     time = time + timedelta(hours=5, minutes=30)
 
     return time.strftime("%I:%M %p").lstrip("0")
+
+def get_ai_response(message):
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=message
+        )
+
+        return response.text
+
+    except Exception:
+        return "Sorry, I am unable to respond right now. Please try again later."
 
 
 @main.route("/")
@@ -243,7 +258,7 @@ def send_message():
             (title, chat_id, session["user_id"])
         )
 
-    ai_response = "I received your question. AI response will be connected here."
+    ai_response = get_ai_response(content.strip())
 
     connection.execute(
         """
