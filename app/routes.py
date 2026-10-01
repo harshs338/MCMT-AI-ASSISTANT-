@@ -131,7 +131,7 @@ def student_chat():
 
     chats = connection.execute(
         """
-        SELECT chat_id, title
+        SELECT chat_id, title, created_at
         FROM chats
         WHERE user_id = ?
         ORDER BY created_at DESC
@@ -210,6 +210,15 @@ def send_message():
         connection.close()
         return redirect(url_for("main.student_chat"))
 
+    message_count = connection.execute(
+        """
+        SELECT COUNT(*) AS total
+        FROM messages
+        WHERE chat_id = ?
+        """,
+        (chat_id,)
+    ).fetchone()
+
     connection.execute(
         """
         INSERT INTO messages (chat_id, sender, content)
@@ -217,6 +226,22 @@ def send_message():
         """,
         (chat_id, "user", content.strip())
     )
+
+    if message_count["total"] == 0:
+
+        title = content.strip()
+
+        if len(title) > 30:
+            title = title[:30] + "..."
+
+        connection.execute(
+            """
+            UPDATE chats
+            SET title = ?
+            WHERE chat_id = ? AND user_id = ?
+            """,
+            (title, chat_id, session["user_id"])
+        )
 
     connection.commit()
     connection.close()
@@ -248,6 +273,47 @@ def new_chat():
     connection.close()
 
     return redirect(url_for("main.student_chat", chat_id=chat_id))
+
+@main.route("/delete-chat/<int:chat_id>")
+def delete_chat(chat_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("main.login"))
+
+    connection = get_db_connection()
+
+    chat = connection.execute(
+        """
+        SELECT chat_id
+        FROM chats
+        WHERE chat_id = ? AND user_id = ?
+        """,
+        (chat_id, session["user_id"])
+    ).fetchone()
+
+    if chat:
+
+        connection.execute(
+            """
+            DELETE FROM messages
+            WHERE chat_id = ?
+            """,
+            (chat_id,)
+        )
+
+        connection.execute(
+            """
+            DELETE FROM chats
+            WHERE chat_id = ? AND user_id = ?
+            """,
+            (chat_id, session["user_id"])
+        )
+
+        connection.commit()
+
+    connection.close()
+
+    return redirect(url_for("main.student_chat"))
 
 @main.route("/logout")
 def logout():

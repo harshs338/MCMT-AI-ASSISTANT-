@@ -15,17 +15,40 @@ Student Chat - MCMT AI Assistant
 </a>   
         <h3>Previous Chats</h3>
 
-      <div class="chat-list">
+    <div class="chat-list">
 
     {% for chat in chats %}
-        <a href="{{ url_for('main.student_chat', chat_id=chat['chat_id']) }}">
-            {{ chat["title"] }}
-        </a>
+
+        <div class="chat-item">
+
+            <div class="chat-info">
+
+                <a href="{{ url_for('main.student_chat', chat_id=chat['chat_id']) }}">
+                    {{ chat["title"] }}
+                </a>
+
+                <small class="chat-time">
+                    {{ chat["created_at"][11:16] }}
+                </small>
+
+            </div>
+
+            <a
+                href="{{ url_for('main.delete_chat', chat_id=chat['chat_id']) }}"
+                class="delete-chat"
+            >
+                Delete
+            </a>
+
+        </div>
+
     {% else %}
+
         <p>No previous chats yet.</p>
+
     {% endfor %}
 
-</div>  
+</div>
 
         <a href="#">Profile</a>
 
